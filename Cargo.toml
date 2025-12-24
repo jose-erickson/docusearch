@@ -1,0 +1,37 @@
+[package]
+name = "successfactors-microservice"
+version = "0.1.0"
+edition = "2021"
+description = "A microservice for reading SAP SuccessFactors Employee Central data"
+authors = ["Your Name <your.email@example.com>"]
+
+[dependencies]
+# Web framework
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# HTTP client for SuccessFactors OData API
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Configuration
+dotenvy = "0.15"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+thiserror = "1"
+anyhow = "1"
+
+# Base64 encoding for Basic Auth
+base64 = "0.21"
+
+[dev-dependencies]
+tokio-test = "0.4"
