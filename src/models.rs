@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-/// OData response wrapper for SuccessFactors API
+/// OData response wrapper for SuccessFactors list responses.
 #[derive(Debug, Deserialize)]
 pub struct ODataResponse<T> {
     #[serde(rename = "d")]
@@ -12,14 +12,13 @@ pub struct ODataResults<T> {
     pub results: Vec<T>,
 }
 
-/// Single entity OData response
+/// OData response for single-entity lookups.
 #[derive(Debug, Deserialize)]
 pub struct ODataSingleResponse<T> {
     #[serde(rename = "d")]
     pub data: T,
 }
 
-/// Employee personal information from PerPersonal entity
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct PerPersonal {
@@ -34,7 +33,6 @@ pub struct PerPersonal {
     #[serde(rename = "displayName")]
     pub display_name: Option<String>,
     pub gender: Option<String>,
-    #[serde(rename = "nationality")]
     pub nationality: Option<String>,
     #[serde(rename = "dateOfBirth")]
     pub date_of_birth: Option<String>,
@@ -42,7 +40,6 @@ pub struct PerPersonal {
     pub marital_status: Option<String>,
 }
 
-/// Employee email information from PerEmail entity
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct PerEmail {
@@ -56,7 +53,6 @@ pub struct PerEmail {
     pub is_primary: Option<bool>,
 }
 
-/// Employee phone information from PerPhone entity
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct PerPhone {
@@ -70,7 +66,6 @@ pub struct PerPhone {
     pub is_primary: Option<bool>,
 }
 
-/// Employment information from EmpEmployment entity
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct EmpEmployment {
@@ -86,7 +81,6 @@ pub struct EmpEmployment {
     pub employment_status: Option<String>,
 }
 
-/// Job information from EmpJob entity
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct EmpJob {
@@ -107,7 +101,6 @@ pub struct EmpJob {
     pub start_date: Option<String>,
 }
 
-/// User information from User entity
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
@@ -122,21 +115,11 @@ pub struct User {
     pub hire_date: Option<String>,
 }
 
-/// Combined employee data for API response
-#[derive(Debug, Serialize, Clone)]
-pub struct Employee {
-    pub user_id: String,
-    pub first_name: Option<String>,
-    pub last_name: Option<String>,
-    pub display_name: Option<String>,
-    pub email: Option<String>,
-    pub job_title: Option<String>,
-    pub department: Option<String>,
-    pub hire_date: Option<String>,
-    pub status: Option<String>,
-}
-
-/// API error response
+/// Public error envelope returned to API consumers.
+///
+/// Only carries sanitized, non-sensitive information. Internal error details
+/// (upstream URLs, stack traces, raw upstream bodies) are logged but never
+/// included here.
 #[derive(Debug, Serialize)]
 pub struct ApiError {
     pub error: String,
@@ -152,9 +135,8 @@ impl ApiError {
     }
 }
 
-/// Health check response
 #[derive(Debug, Serialize)]
 pub struct HealthResponse {
-    pub status: String,
-    pub version: String,
+    pub status: &'static str,
+    pub version: &'static str,
 }

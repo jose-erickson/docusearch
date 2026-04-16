@@ -2,17 +2,17 @@
 name = "successfactors-microservice"
 version = "0.1.0"
 edition = "2021"
-description = "A microservice for reading SAP SuccessFactors Employee Central data"
+description = "A secure microservice for reading SAP SuccessFactors Employee Central data"
 authors = ["Your Name <your.email@example.com>"]
 
 [dependencies]
 # Web framework
-axum = "0.7"
+axum = { version = "0.7", features = ["macros"] }
 tokio = { version = "1", features = ["full"] }
-tower = "0.4"
-tower-http = { version = "0.5", features = ["cors", "trace"] }
+tower = { version = "0.4", features = ["limit", "timeout", "buffer"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "limit", "timeout", "set-header", "compression-gzip"] }
 
-# HTTP client for SuccessFactors OData API
+# HTTP client for SuccessFactors OData API with rustls (no OpenSSL)
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
 
 # Serialization
@@ -24,7 +24,7 @@ dotenvy = "0.15"
 
 # Logging
 tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 
 # Error handling
 thiserror = "1"
@@ -33,5 +33,32 @@ anyhow = "1"
 # Base64 encoding for Basic Auth
 base64 = "0.21"
 
+# Security: protect secrets in memory (zeroize on drop)
+secrecy = { version = "0.8", features = ["serde"] }
+
+# Security: rate limiting
+governor = "0.6"
+
+# Security: constant-time comparisons for API keys
+subtle = "2.5"
+
+# Validation
+validator = { version = "0.16", features = ["derive"] }
+
+# URL validation/escaping
+url = "2"
+percent-encoding = "2"
+
+# HTTP types
+http = "1"
+
 [dev-dependencies]
 tokio-test = "0.4"
+
+[profile.release]
+# Security: abort on panic prevents unwinding which can leak info
+panic = "abort"
+# Optimize for size and speed
+lto = true
+codegen-units = 1
+strip = true
